@@ -452,6 +452,10 @@ export class StructType extends AbstractType implements gt.StructType {
     }
 
     public isAssignableTo(target: AbstractType) {
+        if (target instanceof StructType && this.symbol == target.symbol) {
+            return true;
+        }
+        
         if (target instanceof ReferenceType && target.kind === gt.SyntaxKind.StructrefKeyword && this.symbol === (<StructType>target.declaredType).symbol) {
             return true;
         }
@@ -561,6 +565,11 @@ export class ReferenceType extends AbstractType {
         if (target instanceof ReferenceType && this.kind === target.kind) {
             return this.declaredType.isAssignableTo(target);
         }
+        
+        if (target instanceof StructType && this.kind === gt.SyntaxKind.StructrefKeyword && (<StructType>target).symbol === (<StructType>this.declaredType).symbol) {
+            return true;
+        }
+        
         return false;
     }
 
